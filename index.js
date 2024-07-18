@@ -3,57 +3,37 @@ export function formatNumericValue(value, options = {}) {
 		prefix = "",
 		suffix = "",
 		decimals = 2,
-		thousandsSeparator = ".",
-		decimalSeparator = ",",
-		negativeInRed = false,
+		locale = "en-US", // Added locale support
+		fallbackValue = "NaN", // Customizable fallback value
+		useScientificNotation = false, // Option for scientific notation
+		negativeClass = "", // Class for negative values instead of inline styles
 	} = options;
 
 	// Check if the value is numeric
 	if (typeof value !== "number" || isNaN(value)) {
-		return "NaN";
+		return fallbackValue;
 	}
 
-	// Apply rounding and convert to a string with the specified number of decimals
-	const formattedValue = value.toFixed(decimals);
+	let formattedResult;
 
-	// Split into integer and decimal parts
-	const [integerPart, decimalPart] = formattedValue.split(".");
-
-	// Add thousands separator to the integer part
-	const integerWithSeparator = integerPart.replace(
-		/\B(?=(\d{3})+(?!\d))/g,
-		thousandsSeparator
-	);
-
-	// Combine integer and decimal parts with the decimal separator
-	const result =
-		integerWithSeparator +
-		(decimalPart ? decimalSeparator + decimalPart : "");
+	if (useScientificNotation) {
+		// Format in scientific notation
+		formattedResult = value.toExponential(decimals);
+	} else {
+		// Locale-aware formatting
+		formattedResult = new Intl.NumberFormat(locale, {
+			minimumFractionDigits: decimals,
+			maximumFractionDigits: decimals,
+		}).format(value);
+	}
 
 	// Add prefix and suffix
-	const formattedResult = `${prefix}${result}${suffix}`;
+	formattedResult = `${prefix}${formattedResult}${suffix}`;
 
-	// Apply red color to negative values if required
-	if (negativeInRed && value < 0) {
-		return `<span style="color: red;">${formattedResult}</span>`;
+	// Apply class to negative values if required
+	if (negativeClass && value < 0) {
+		return `<span class="${negativeClass}">${formattedResult}</span>`;
 	}
 
 	return formattedResult;
-}
-
-export const isEmptyObject = (obj) => Object.keys(obj).length === 0;
-
-export const calculateToastDuration = (message) => {
-	// Calculate the length of the message
-	const messageLength = message.length;
-
-	// Adjust the duration based on the message length
-	// You can tweak the values according to your preference
-	const duration = Math.max(messageLength * 40, 2000);
-
-	return duration;
-};
-
-export function cn(...cns) {
-	return cns.join(" ");
 }
