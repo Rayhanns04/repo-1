@@ -38,24 +38,7 @@ export function formatNumericValue(value, options = {}) {
 	return formattedResult;
 }
 
-export const getTimeRemaining = (endtime) => {
-	const total = Date.parse(endtime) - Date.parse(new Date());
-	const timeCalc = (unit) =>
-		Math.max(
-			Math.floor(
-				(total / unit) %
-					(unit === 1000 ? 60 : unit === 1000 * 60 ? 60 : 24)
-			),
-			0
-		)
-			.toString()
-			.padStart(2, "0");
-
-	return {
-		total,
-		days: timeCalc(1000 * 60 * 60 * 24),
-		hours: timeCalc(1000 * 60 * 60),
-		minutes: timeCalc(1000 * 60),
-		seconds: timeCalc(1000),
-	};
-};
+export const getTimeRemaining = (total, unit, divisor) =>
+	Math.max(Math.floor((total / unit) % divisor), 0)
+		.toString()
+		.padStart(2, "0");
