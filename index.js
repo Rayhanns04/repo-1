@@ -14,8 +14,6 @@ export function formatNumericValue(value, options = {}) {
 		return fallbackValue;
 	}
 
-	console.log("value", value);
-
 	let formattedResult;
 
 	if (useScientificNotation) {
