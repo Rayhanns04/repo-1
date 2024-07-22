@@ -14,6 +14,8 @@ export function formatNumericValue(value, options = {}) {
 		return fallbackValue;
 	}
 
+	console.log("value", value);
+
 	let formattedResult;
 
 	if (useScientificNotation) {
@@ -38,7 +40,16 @@ export function formatNumericValue(value, options = {}) {
 	return formattedResult;
 }
 
-export const getTimeRemaining = (total, unit, divisor) =>
-	Math.max(Math.floor((total / unit) % divisor), 0)
-		.toString()
-		.padStart(2, "0");
+export const getTimeRemaining = (total, unit, divisor) => {
+	if (
+		typeof total !== "number" ||
+		typeof unit !== "number" ||
+		typeof divisor !== "number"
+	) {
+		throw new TypeError("All parameters must be numbers");
+	}
+	if (unit === 0 || divisor === 0) {
+		throw new Error("Unit and divisor must be non-zero");
+	}
+	return Math.max(Math.floor((total / unit) % divisor), 0);
+};
