@@ -41,11 +41,15 @@ export function formatNumericValue(value, options = {}) {
 }
 
 export const getTimeRemaining = (total, unit, divisor) => {
-	console.log("total", total);
-	console.log("unit", unit);
-	console.log("divisor", divisor);
-
-	return Math.max(Math.floor((total / unit) % divisor), 0)
-		.toString()
-		.padStart(2, "0");
+	if (
+		typeof total !== "number" ||
+		typeof unit !== "number" ||
+		typeof divisor !== "number"
+	) {
+		throw new TypeError("All parameters must be numbers");
+	}
+	if (unit === 0 || divisor === 0) {
+		throw new Error("Unit and divisor must be non-zero");
+	}
+	return Math.max(Math.floor((total / unit) % divisor), 0);
 };
